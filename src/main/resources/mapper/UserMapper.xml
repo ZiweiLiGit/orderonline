@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.liziwei.orderonline.mapper.UserMapper">
+    <resultMap type="com.liziwei.orderonline.entity.User" id="userMap">
+        <id column="id" property="id" javaType="java.lang.Integer" />
+        <result column="user_name" property="userName" javaType="java.lang.String" />
+        <result column="user_id_no" property="userIdNo" javaType="java.lang.String" />
+        <result column="sex" property="sex" javaType="java.lang.String" />
+        <result column="password" property="password" javaType="java.lang.String" />
+    </resultMap>
+    <!--用户信息 不包括密码 用户类型-->
+    <resultMap type="com.liziwei.orderonline.entity.User" id="userInfoMap">
+        <id column="id" property="id" javaType="java.lang.Integer" />
+        <result column="user_name" property="userName" javaType="java.lang.String" />
+        <result column="user_id_no" property="userIdNo" javaType="java.lang.String" />
+        <result column="sex" property="sex" javaType="java.lang.String" />
+    </resultMap>
+    <!--顾客注册 插入用户记录-->
+    <insert id="guessRegister" parameterType="com.liziwei.orderonline.entity.User" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_user
+        (
+          user_name,
+          user_id_no,
+          sex,
+          password
+        )
+        values
+        (
+          #{userName},
+          #{userIdNo},
+          #{sex},
+          #{password}
+        )
+    </insert>
+
+    <!--顾客注册 插入用户记录-->
+    <insert id="adminRegister" parameterType="com.liziwei.orderonline.entity.User" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_user
+        (
+          user_name,
+          user_id_no,
+          sex,
+          password
+        )
+        values
+        (
+          #{userName},
+          #{userIdNo},
+          #{sex},
+          #{password}
+        )
+    </insert>
+    <!--注销用户 根据用户id-->
+    <delete id="deleteUser" parameterType="java.lang.Integer">
+        delete from  tb_user
+        where id = #{id}
+    </delete>
+
+    <!--修改用户信息  不修改密码-->
+    <update id="updateUser" parameterType="com.liziwei.orderonline.entity.User">
+        update tb_user
+        set
+          user_name = #{userName},
+          user_id_no = #{userIdNo},
+          sex = #{sex}
+        where
+          id = #{id}
+    </update>
+
+    <!--用户修改密码-->
+    <update id="updatePassword">
+        update tb_user
+        set password = #{password}
+        where id = #{id}
+    </update>
+
+    <!--获取所有顾客信息-->
+    <select id="selectAllGuess" resultMap="userInfoMap">
+        select id,user_name,user_id_no,sex
+        from tb_user
+    </select>
+
+    <!--用户登录-->
+    <select id="userLogin" resultType="com.liziwei.orderonline.entity.User">
+        select id,user_name,password
+        from tb_user
+        where user_name = #{userName} and password = #{password};
+    </select>
+
+    <!--管理员登陆 查询唯一的管理员用户名密码-->
+    <select id="adminLogin" resultType="com.liziwei.orderonline.entity.User">
+        select id,user_name,password
+        from tb_admin
+    </select>
+    <!--管理员信息修改-->
+    <select id="adminUpdate" resultType="com.liziwei.orderonline.entity.User">
+        update  tb_user
+        set
+          user_name = #{userName},
+          user_id_no = #{userIdNo},
+          sex = #{sex}
+        where
+         id = #{id}
+    </select>
+</mapper>

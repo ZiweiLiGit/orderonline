@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加菜品信息</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../../static/assets/libs/layui/css/layui.css">
+    <link rel="stylesheet" href="../../static/assets/css/public.css" media="all">
+</head>
+<body>
+<div class="layui-container">
+    <div class="login-main">
+        <h1 class="layui-elip" style="width: 82%" align="center">添加菜品</h1>
+        <!-- 表单选项 -->
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">菜名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="foodname" required lay-verify="required" placeholder="请输入菜名" autocomplete="off"
+                           class="layui-input">
+                </div>
+            </div>
+            <!--隐藏的输入框，用来传递images的src地址-->
+            <input type="hidden" name="images" class="image">
+            <div class="layui-form-item">
+                <label class="layui-form-label ">菜品图片</label>
+                <div class="layui-upload">
+                    <button type="button" class="layui-btn" id="file" name="file">上传图片</button>
+                    <div class="layui-upload-list">
+                        <img class="layui-upload-img" id="demo1">
+                        <p id="demoText"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">价格</label>
+                <div class="layui-input-block">
+                    <input type="text" name="price" required lay-verify="required" placeholder="请输入价格"
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">菜品介绍</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" class="layui-textarea" name="introduce"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">库存</label>
+                <div class="layui-input-block">
+                    <input type="text" name="stock" required lay-verify="required" placeholder="请输入库存"
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="sub">立即提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="../../static/assets/libs/layui/layui.js"></script>
+<script type="text/javascript">
+    layui.use(['form','jquery','layer','upload'], function () {
+        var form   = layui.form;
+        var layer  = layui.layer;
+        var $ = layui.jquery
+            ,upload = layui.upload;
+
+        //验证表单
+        form.verify({
+            foodname: function(value, item){//value：表单的值、item：表单的DOM对象 自定义验证规则
+                if(!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)){
+                    return '菜品名不能有特殊字' +
+                        '符';
+                }
+                if(/^\d+\d+\d$/.test(value)){
+                    return '菜品名不能全为数字';
+                }
+
+            },
+            price:function(value,item){
+                if(/^[1-9]\d*\.\d*|0\.\d*[1-9]\d*$/.test(value)){
+                    return"价格 只能为正数";
+                }
+            },
+            stock:function (value,item) {
+                if (/^[1-9]\d*$/.test(value)){
+                    return"库存只能为正整数";
+                }
+            }
+        });
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#file'
+            ,url: 'http://127.0.0.1:8080/api/food/uploadImg'
+            ,type: 'post'
+            // ,dataType:'json'
+            // ,jsonp:'callback'
+            ,enctype: 'multipart/form-data'
+            ,accept:'image/*'
+            ,size:50000
+            ,before: function(obj){
+
+                obj.preview(function(index, file, result){
+
+                    $('#demo1').attr('src', result);
+                });
+            }
+            ,done: function(res){
+                //如果上传失败
+                if(res.code > 0){
+                    return layer.msg('上传失败');
+                }
+                //上传成功
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #4cae4c;">上传成功</span>');
+
+                // 获取后端传过来的图片的url,之后给表单的隐藏图片输入框赋值
+                var fileupload = $(".image");
+                fileupload.attr("value",res.data.src);
+                console.log(fileupload.attr("value"));
+            }
+            ,error: function(){
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span><a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function(){
+                    uploadInst.upload();
+                });
+            }
+        });
+
+        //添加表单监听事件,提交表单信息
+        form.on('submit(sub)', function(data) {
+            data = data.field;
+            $.ajax({
+                url:'http://127.0.0.1:8080/api/food/addFood',
+                type:'post',
+                dataType:'json',
+                data: {
+                    foodname: data.foodname,
+                    pic: data.pic,
+                    price: data.price,
+                    images:data.images,
+                    introduce: data.introduce,
+                    stock: data.stock
+                },
+                success:function(data){
+                    if (data.code == 0) {
+                        alert(data.msg);
+                        window.href = "../food/showFood.html";
+                    }else {
+                        alert(data.msg);
+                    }
+                }
+            });
+            //防止页面跳转
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

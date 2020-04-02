@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.liziwei.orderonline.mapper.OrderMapper">
+    <resultMap type="com.liziwei.orderonline.entity.Order" id="orderMap">
+        <id column="id" property="id" javaType="java.lang.Integer" />
+        <result column="total_money" property="totalMoney" javaType="java.lang.Double" />
+        <result column="create_time" property="createTime" javaType="java.sql.Timestamp" />
+        <result column="user_id" property="userId" javaType="java.lang.Integer" />
+        <result column="state" property="state" javaType="java.lang.Integer" />
+    </resultMap>
+    <!--添加菜品进订单-->
+    <insert id="addOrder" parameterType="com.liziwei.orderonline.entity.Order" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_order
+        (
+          total_money ,
+          user_id,
+          state
+        )
+        values
+        (
+          #{totalMoney},
+          #{userId},
+          0
+        )
+    </insert>
+    <!--支付订单  将订单状态从未支付状态修改未已支付状态-->
+    <update id="payOrder" parameterType="java.lang.Integer">
+        update tb_order
+        set
+          state = 1
+        where
+          id = #{id}
+    </update>
+
+    <!--查看单个用户所有订单-->
+    <select id="selectAllOrderById" parameterType="java.lang.Integer" resultMap="orderMap">
+        select
+          id,
+          total_money,
+          create_time,
+          user_id,
+          state
+        from
+          tb_order
+        where
+         user_id = #{userId}
+        order by create_time
+    </select>
+
+    <!--查看单个用户已支付订单-->
+    <select id="selectUserPayedOrder" resultMap="orderMap" parameterType="java.lang.Integer">
+        select
+          id,
+          total_money,
+          create_time,
+          state
+        from
+          tb_order
+        where
+         user_id = #{userId} and state = 1
+        order by create_time
+    </select>
+    <!--查看单个用户未支付订单-->
+    <select id="selectUserUnPayedOrder" resultMap="orderMap" parameterType="java.lang.Integer">
+        select
+          id,
+          total_money,
+          create_time,
+          state
+        from
+          tb_order
+        where
+         user_id = #{userId} and state = 0
+        order by create_time
+    </select>
+
+    <!--查看所有用户已支付的订单-->
+    <select id="selectAllPayedOrder" resultMap="orderMap">
+        select
+          id,
+          total_money,
+          create_time,
+          user_id,
+          state
+        from
+          tb_order
+        where
+         state = 1
+        order by create_time
+    </select>
+
+    <!--查看所有用户已支付的订单-->
+    <select id="selectAllUnPayedOrder" resultMap="orderMap">
+        select
+          id,
+          total_money,
+          create_time,
+          user_id,
+          state
+        from
+          tb_order
+        where
+         state = 0
+        order by create_time
+    </select>
+
+
+</mapper>

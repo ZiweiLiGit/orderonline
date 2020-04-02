@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.liziwei.orderonline.mapper.FoodCarMapper">
+    <resultMap type="com.liziwei.orderonline.entity.FoodCarItem" id="foodCarMap">
+        <id column="id" property="id" javaType="java.lang.Integer" />
+        <result column="user_id" property="userId" javaType="java.lang.Integer" />
+        <result column="food_id" property="foodId" javaType="java.lang.Integer" />
+        <result column="count" property="count" javaType="java.lang.Integer" />
+    </resultMap>
+    <!--添加进购物车-->
+    <insert id="addFoodCar" keyColumn="id" parameterType="com.liziwei.orderonline.entity.FoodCarItem" useGeneratedKeys="true">
+        insert into tb_food_car
+        (user_id,food_id,count)
+        values
+        (
+          #{userId},
+          #{foodId},
+          count
+        )
+    </insert>
+
+    <!--获取用户购物车-->
+    <select id="selectFoodCar" parameterType="java.lang.Integer" resultMap="foodCarMap">
+        select
+          id,user_id,food_id,count
+        from
+          tb_food_car
+        where
+          user_id = #{userId}
+    </select>
+
+    <!--从购物车中删除-->
+    <delete id="deleteFromFoodCar" parameterType="java.lang.Integer">
+        delete from tb_food_car
+        where id = #{fooCarId}
+    </delete>
+</mapper>

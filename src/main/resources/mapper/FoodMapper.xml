@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.liziwei.orderonline.mapper.FoodMapper">
+    <resultMap type="com.liziwei.orderonline.entity.Food" id="foodMap">
+        <id column="id" property="id" javaType="java.lang.Integer" />
+        <result column="food_name" property="foodName" javaType="java.lang.String" />
+        <result column="price" property="price" javaType="java.lang.Double" />
+        <result column="pic" property="pic" javaType="java.lang.String" />
+        <result column="introduce" property="introduce" javaType="java.lang.String" />
+        <result column="stock" property="stock" javaType="java.lang.Integer" />
+    </resultMap>
+    <!--添加菜品 插入菜品记录-->
+    <insert id="addFood" parameterType="com.liziwei.orderonline.entity.Food" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_food
+        (
+          food_name,
+          price,
+          pic,
+          introduce,
+          stock
+        )
+        values
+        (
+          #{foodName},
+          #{price},
+          #{pic},
+          #{introduce},
+          #{stock}
+        )
+    </insert>
+    <!--删除菜品 删除一条菜品记录-->
+    <delete id="deleteFood" parameterType="java.lang.Integer">
+        delete from tb_food
+        where id = #{id}
+    </delete>
+
+    <!--修改菜品信息-->
+    <update id="updateFood" parameterType="com.liziwei.orderonline.entity.Food">
+        update tb_food
+        set
+          food_name = #{foodName},
+          price = #{price},
+          pic = #{pic},
+          introduce = #{introduce},
+          stock = #{stock}
+        where
+          id = #{id}
+    </update>
+
+    <!--查询所有菜品-->
+    <select id="selectAllFoodList" resultMap="foodMap">
+        select
+          id,
+          food_name,
+          price,
+          pic,
+          introduce,
+          stock
+        from
+          tb_food
+        order by id
+    </select>
+
+
+    <!--根据id查询菜品信息-->
+    <select id="selectFoodById" resultType="com.liziwei.orderonline.entity.Food">
+        select
+          id,
+          food_name,
+          price,
+          pic,
+          introduce,
+          stock
+        from
+          tb_food
+        where
+          id = #{id}
+    </select>
+
+
+</mapper>

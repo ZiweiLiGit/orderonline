@@ -1,0 +1,83 @@
+{
+  "clearInfo": {
+    "clearUrl": "api/clear.json"
+  },
+  "homeInfo": {
+    "title": "首页",
+    "icon": "fa fa-home",
+    "href": "./home/welcome.html"
+  },
+  "logoInfo": {
+    "title": "网上订餐系统",
+    "image": "../static/assets/images/logo.png",
+    "href": ""
+  },
+  "menuInfo": {
+    "currency": {
+      "title": "常规管理",
+      "icon": "fa fa-address-book",
+      "child": [
+        {
+          "title": "菜品管理",
+          "href": "",
+          "icon": "fa fa-home",
+          "child": [
+            {
+              "title": "查看菜品",
+              "href": "./food/showFood.html",
+              "icon": "fa fa-home",
+              "target": "_self"
+
+            },
+            {
+              "title": "添加菜品",
+              "href": "./food/addFood.html",
+              "icon": "fa fa-home",
+              "target": "_self"
+
+            }
+          ]
+        },
+        {
+          "title": "订单管理",
+          "href": "",
+          "icon": "",
+          "target": "_self"
+        },
+        {
+          "title": "用户管理",
+          "href": "",
+          "icon": "",
+          "child": [
+            {
+              "title": "会员管理",
+              "href": "./user/showGuesses.html",
+              "icon": "fa fa-home",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "个人信息管理",
+          "icon": "",
+          "child":[
+            {
+              "title": "修改个人信息",
+              "href": "./user/editAdmin.html",
+              "icon": "fa fa-home",
+              "target": "_self"
+            },{
+              "title": "修改密码",
+              "href": "./user/updateAdminPwd.html",
+              "icon": "fa fa-home",
+              "target": "_self"
+            }
+          ]
+        }
+      ]
+  }
+}
+
+}
+
+
